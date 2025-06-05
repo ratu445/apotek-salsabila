@@ -13,7 +13,7 @@ class CreatePermintaansTable extends Migration
      */
     public function up()
     {
-        Schema::create('permintaans', function (Blueprint $table) {
+        Schema::create('permintaan', function (Blueprint $table) {
             $table->id('id_permintaan');
             $table->date('tgl');
             $table->decimal('total_bayar', 15, 2);

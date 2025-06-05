@@ -13,7 +13,7 @@ class CreateBarangsTable extends Migration
      */
     public function up()
     {
-        Schema::create('barangs', function (Blueprint $table) {
+        Schema::create('barang', function (Blueprint $table) {
             $table->id('id_barang');
             $table->foreignId('id_kategori')->constrained('kategoris', 'id_kategori');
             $table->foreignId('id_supplier')->constrained('suppliers', 'id_supplier');

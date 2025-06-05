@@ -13,7 +13,7 @@ class CreateResepItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('resep_items', function (Blueprint $table) {
+        Schema::create('resep_item', function (Blueprint $table) {
             $table->id('id_resep_item');
             $table->foreignId('id_resep')->constrained('reseps', 'id_resep');
             $table->foreignId('id_barang')->constrained('barangs', 'id_barang');
