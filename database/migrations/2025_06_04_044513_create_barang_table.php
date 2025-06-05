@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBarangsTable extends Migration
+class CreateBarangTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,9 +15,9 @@ class CreateBarangsTable extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->id('id_barang');
-            $table->foreignId('id_kategori')->constrained('kategoris', 'id_kategori');
-            $table->foreignId('id_supplier')->constrained('suppliers', 'id_supplier');
-            $table->string('kode_barang', 20);
+            $table->foreignId('id_kategori')->constrained('kategori', 'id_kategori');
+            $table->foreignId('id_supplier')->constrained('supplier', 'id_supplier');
+            $table->string('kode_barang', 20)->unique();
             $table->string('nama_barang', 125);
             $table->string('keterangan', 50)->comment('Satuan produk (tablet, botol, tube, etc.)');
             $table->decimal('harga', 15, 2);
@@ -25,8 +25,9 @@ class CreateBarangsTable extends Migration
             $table->date('expired_date')->nullable();
             $table->string('produsen', 125)->nullable();
             $table->text('komposisi')->nullable();
-            $table->text('gambar');
+            $table->text('gambar')->nullable();
             $table->timestamps();
+                        
         });
     }
 
@@ -37,6 +38,6 @@ class CreateBarangsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barangs');
+        Schema::dropIfExists('barang');  // Changed from 'barangs' to 'barang'
     }
 }

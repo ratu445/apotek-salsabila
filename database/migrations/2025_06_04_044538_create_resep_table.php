@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateResepsTable extends Migration
+class CreateResepTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateResepsTable extends Migration
     {
         Schema::create('resep', function (Blueprint $table) {
             $table->id('id_resep');
-            $table->foreignId('id_pengguna')->constrained('penggunas', 'id_pengguna');
+            $table->foreignId('id_pengguna')->constrained('pengguna', 'id_pengguna');
             $table->string('nama_pasien', 125);
             $table->text('diagnosa')->nullable();
             $table->date('tgl_resep');
