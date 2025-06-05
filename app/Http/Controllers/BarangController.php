@@ -15,109 +15,80 @@ class BarangController extends Controller
         $barangs = Barang::with(['kategori', 'supplier'])->get();
         return view('barang.index', compact('barangs'));
     }
-    
+
     public function create()
     {
         $kategoris = Kategori::all();
         $suppliers = Supplier::all();
         return view('barang.create', compact('kategoris', 'suppliers'));
     }
-    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_kategori' => 'required|exists:kategoris,id_kategori',
-            'id_supplier' => 'required|exists:suppliers,id_supplier',
-            'kode_barang' => 'required|unique:barangs,kode_barang',
-            'nama_barang' => 'required',
-            'keterangan' => 'required',
-            'harga' => 'required|numeric',
-            'stok' => 'required|integer',
+            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'id_supplier' => 'required|exists:supplier,id_supplier',
+            'kode_barang' => 'required|unique:barang,kode_barang|max:20',
+            'nama_barang' => 'required|max:125',
+            'keterangan' => 'required|max:50',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'expired_date' => 'nullable|date',
-            'produsen' => 'nullable',
+            'produsen' => 'nullable|max:125',
             'komposisi' => 'nullable',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-        
+
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('barang-images', 'public');
+            $validated['gambar'] = $request->file('gambar')->store('barang', 'public');
         }
-        
+
         Barang::create($validated);
-        
+
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan');
     }
-    
-    public function show(Barang $barang)
-    {
-        return view('barang.show', compact('barang'));
-    }
-    
+
     public function edit(Barang $barang)
     {
         $kategoris = Kategori::all();
         $suppliers = Supplier::all();
         return view('barang.edit', compact('barang', 'kategoris', 'suppliers'));
     }
-    
+
     public function update(Request $request, Barang $barang)
     {
         $validated = $request->validate([
-            'id_kategori' => 'required|exists:kategoris,id_kategori',
-            'id_supplier' => 'required|exists:suppliers,id_supplier',
-            'kode_barang' => 'required|unique:barangs,kode_barang,'.$barang->id_barang.',id_barang',
-            'nama_barang' => 'required',
-            'keterangan' => 'required',
-            'harga' => 'required|numeric',
-            'stok' => 'required|integer',
+            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'id_supplier' => 'required|exists:supplier,id_supplier',
+            'kode_barang' => 'required|max:20|unique:barang,kode_barang,'.$barang->id_barang.',id_barang',
+            'nama_barang' => 'required|max:125',
+            'keterangan' => 'required|max:50',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'expired_date' => 'nullable|date',
-            'produsen' => 'nullable',
+            'produsen' => 'nullable|max:125',
             'komposisi' => 'nullable',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-        
+
         if ($request->hasFile('gambar')) {
             if ($barang->gambar) {
                 Storage::disk('public')->delete($barang->gambar);
             }
-            $validated['gambar'] = $request->file('gambar')->store('barang-images', 'public');
+            $validated['gambar'] = $request->file('gambar')->store('barang', 'public');
         }
-        
+
         $barang->update($validated);
-        
+
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui');
     }
-    
+
     public function destroy(Barang $barang)
     {
         if ($barang->gambar) {
             Storage::disk('public')->delete($barang->gambar);
         }
-        
         $barang->delete();
-        
         return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus');
-    }
-    
-    public function api(Request $request)
-    {
-        $search = $request->search;
-        
-        $barangs = Barang::when($search, function($query) use ($search) {
-            $query->where('nama_barang', 'like', "%$search%")
-                  ->orWhere('kode_barang', 'like', "%$search%");
-        })->limit(10)->get();
-        
-        $response = [];
-        foreach ($barangs as $barang) {
-            $response[] = [
-                'id' => $barang->id_barang,
-                'text' => $barang->kode_barang . ' - ' . $barang->nama_barang . ' (Stok: ' . $barang->stok . ')',
-                'harga' => $barang->harga,
-                'stok' => $barang->stok
-            ];
-        }
-        
-        return response()->json($response);
     }
 }

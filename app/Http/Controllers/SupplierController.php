@@ -2,83 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $suppliers = Supplier::all();
+        return view('supplier.index', compact('suppliers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('supplier.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_supplier' => 'required|max:125',
+            'alamat' => 'required',
+            'no_telp' => 'required|max:15',
+            'email' => 'nullable|email|max:125',
+            'npwp' => 'nullable|max:25'
+        ]);
+
+        Supplier::create($request->all());
+
+        return redirect()->route('supplier.index')
+            ->with('success', 'Supplier berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Supplier $supplier)
     {
-        //
+        return view('supplier.edit', compact('supplier'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(Request $request, Supplier $supplier)
     {
-        //
+        $request->validate([
+            'nama_supplier' => 'required|max:125',
+            'alamat' => 'required',
+            'no_telp' => 'required|max:15',
+            'email' => 'nullable|email|max:125',
+            'npwp' => 'nullable|max:25'
+        ]);
+
+        $supplier->update($request->all());
+
+        return redirect()->route('supplier.index')
+            ->with('success', 'Supplier berhasil diperbarui');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Supplier $supplier)
     {
-        //
-    }
+        if ($supplier->barangs()->count() > 0) {
+            return redirect()->route('supplier.index')
+                ->with('error', 'Tidak dapat menghapus supplier karena masih menyuplai barang');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $supplier->delete();
+
+        return redirect()->route('supplier.index')
+            ->with('success', 'Supplier berhasil dihapus');
     }
 }

@@ -1,43 +1,62 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\BarangController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ResepController;
-use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\PermintaanController;
+use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\HomeController;
 
-// Authentication Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
 
-// Authenticated Routes
-Route::middleware('auth')->group(function () {
-    // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Resource Routes
-    Route::resource('kategori', KategoriController::class)->except(['show']);
-    Route::resource('supplier', SupplierController::class)->except(['show']);
+// Auth Routes
+Auth::routes(['register' => false]);
+
+// Home Route
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Master Data Routes
+Route::middleware(['auth'])->group(function () {
+    // Barang Routes
     Route::resource('barang', BarangController::class);
+    
+    // Kategori Routes
+    Route::resource('kategori', KategoriController::class)->except(['show']);
+    
+    // Supplier Routes
+    Route::resource('supplier', SupplierController::class)->except(['show']);
+    
+    // Pengguna Routes
     Route::resource('pengguna', PenggunaController::class)->except(['show']);
+    
+    // Resep Routes
     Route::resource('resep', ResepController::class);
-    Route::resource('transaksi', TransaksiController::class);
     
-    // Additional Routes
-    Route::get('laporan/stok', [LaporanController::class, 'stok'])->name('laporan.stok');
-    Route::get('laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
-    Route::get('laporan/expired', [LaporanController::class, 'expired'])->name('laporan.expired');
+    // Permintaan Routes
+    Route::resource('permintaan', PermintaanController::class);
+    Route::post('permintaan/{permintaan}/update-status', [PermintaanController::class, 'updateStatus'])
+        ->name('permintaan.update-status');
     
-    // API Routes for Select2
-    Route::get('api/barang', [BarangController::class, 'api'])->name('api.barang');
+    // Analisis Routes
+    Route::resource('analisis', AnalisisController::class)->except(['edit', 'update']);
+    
+    // Laporan Routes
+    Route::prefix('laporan')->group(function () {
+        Route::get('stok', [LaporanController::class, 'stokBarang'])->name('laporan.stok');
+        Route::get('permintaan', [LaporanController::class, 'permintaan'])->name('laporan.permintaan');
+        Route::get('analisis', [LaporanController::class, 'analisisInventori'])->name('laporan.analisis');
+    });
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
