@@ -13,7 +13,7 @@ class CreateBarangPermintaansTable extends Migration
      */
     public function up()
     {
-        Schema::create('barang_permintaans', function (Blueprint $table) {
+        Schema::create('barang_permintaan', function (Blueprint $table) {
             $table->id('id_bp');
             $table->foreignId('id_permintaan')->constrained('permintaans', 'id_permintaan');
             $table->foreignId('id_barang')->constrained('barangs', 'id_barang');

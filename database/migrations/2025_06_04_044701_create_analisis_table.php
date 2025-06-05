@@ -13,7 +13,7 @@ class CreateAnalisesTable extends Migration
      */
     public function up()
     {
-        Schema::create('analises', function (Blueprint $table) {
+        Schema::create('analisis', function (Blueprint $table) {
             $table->id('id_analisis');
             $table->foreignId('id_barang')->constrained('barangs', 'id_barang');
             $table->integer('dt_jml_permintaan')->comment('Jumlah permintaan dalam periode');

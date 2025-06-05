@@ -13,7 +13,7 @@ class CreateResepsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reseps', function (Blueprint $table) {
+        Schema::create('resep', function (Blueprint $table) {
             $table->id('id_resep');
             $table->foreignId('id_pengguna')->constrained('penggunas', 'id_pengguna');
             $table->string('nama_pasien', 125);

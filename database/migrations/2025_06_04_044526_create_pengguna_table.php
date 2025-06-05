@@ -13,7 +13,7 @@ class CreatePenggunasTable extends Migration
      */
     public function up()
     {
-        Schema::create('penggunas', function (Blueprint $table) {
+        Schema::create('pengguna', function (Blueprint $table) {
             $table->id('id_pengguna');
             $table->string('nama_pengguna', 125);
             $table->text('alamat');
