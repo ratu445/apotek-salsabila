@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBarangPermintaansTable extends Migration
+class CreateBarangPermintaanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class CreateBarangPermintaansTable extends Migration
     {
         Schema::create('barang_permintaan', function (Blueprint $table) {
             $table->id('id_bp');
-            $table->foreignId('id_permintaan')->constrained('permintaans', 'id_permintaan');
-            $table->foreignId('id_barang')->constrained('barangs', 'id_barang');
+            $table->foreignId('id_permintaan')->constrained('permintaan', 'id_permintaan');
+            $table->foreignId('id_barang')->constrained('barang', 'id_barang');
             $table->integer('jumlah');
             $table->decimal('harga_satuan', 15, 2);
             $table->timestamps();

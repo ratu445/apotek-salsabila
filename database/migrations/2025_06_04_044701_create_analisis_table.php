@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnalisesTable extends Migration
+class CreateAnalisisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateAnalisesTable extends Migration
     {
         Schema::create('analisis', function (Blueprint $table) {
             $table->id('id_analisis');
-            $table->foreignId('id_barang')->constrained('barangs', 'id_barang');
+            $table->foreignId('id_barang')->constrained('barang', 'id_barang');
             $table->integer('dt_jml_permintaan')->comment('Jumlah permintaan dalam periode');
             $table->integer('biaya_pemesanan')->comment('Dalam rupiah');
             $table->integer('biaya_penyimpanan')->comment('Dalam rupiah per unit per periode');
